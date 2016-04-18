@@ -8,8 +8,6 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 
 ## Install
 
-:warning: **Incomplete**
-
 ```
 sudo apt-get install xbindkeys scrot python3
 pip3 install imgurpython
@@ -19,6 +17,11 @@ mkdir ~/Pictures/Screenshots
 cp ./nixshot/bin/* ~/bin
 cat ./nixshot/.xbindkeysrc >> ~/.xbindkeysrc
 xbindkeys
+cd ./nixshot/cropscreenshot
+qmake cropscreenshot.pro
+make
+cp ./cropscreenshot ~/bin/cropscreenshot
+cd ../..
 ```
 
 To login to imgur, you'll need to run a script we just installed. If `~/bin` didn't already exist you might need to restart bash first to reload `$PATH`, or use the full path to call it.
