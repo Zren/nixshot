@@ -42,3 +42,7 @@ You can change these by modifying `~/.xbindkeysrc` then running `xbindkeys` to a
 
 * `PrintScreen` Capture screen
 * `Ctrl + PrintScreen` Capture region
+
+## `cropscreenshot`
+
+Click + drag to crop. Press `Esc` to quit without uploading the screenshot.
