@@ -8,21 +8,37 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 
 ## Install
 
+:caution: **Incomplete**
+
 ```
 sudo apt-get install xbindkeys scrot python3
+pip3 install imgurpython
 git clone https://github.com/Zren/nixshot
 mkdir ~/bin
+mkdir ~/Pictures/Screenshots
 cp ./nixshot/bin/* ~/bin
+cat ./nixshot/.xbindkeysrc >> ~/.xbindkeysrc
+xbindkeys
 ```
 
-If `~/bin` didn't already exist you might need to restart bash first to reload the path.
+To login to imgur, you'll need to run a script we just installed. If `~/bin` didn't already exist you might need to restart bash first to reload `$PATH`, or use the full path to call it.
 
 ```
 uploadscreenshot
 ```
 
-Will give you a url to visit with a pin. You then enter the pin code with:
+The above will give you a url to visit to obtain a pin. You then enter the pin code with:
 
 ```
 uploadscreenshot -p CODEHERE
 ```
+
+It will create a new file `~/.nixshotrc` with your credentials. Another file called `.nixshot.log` will also be created later with the imgur responses.
+
+
+## Keybindings
+
+You can change these by modifying `~/.xbindkeysrc` then running `xbindkeys` to apply them.
+
+* `PrintScreen` Capture screen
+* `Ctrl + PrintScreen` Capture region
