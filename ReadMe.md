@@ -8,7 +8,7 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 
 ## Install
 
-:caution: **Incomplete**
+:warning: **Incomplete**
 
 ```
 sudo apt-get install xbindkeys scrot python3
