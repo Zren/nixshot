@@ -108,8 +108,8 @@ Window {
 //            x: -cursorX
 //            y: -cursorY
 
-            x: -cursorX*scale + parent.width/2
-            y: -cursorY*scale + parent.height/2
+            x: -cursorX*scale + parent.width/2 - scale/2
+            y: -cursorY*scale + parent.height/2 - scale/2
             scale: 16
             smooth: false // Don't blur when scaling
             transformOrigin: Item.TopLeft
@@ -120,7 +120,7 @@ Window {
             color: "transparent"
             border.color: "black"
             border.width: 1
-            x: parent.width/2
+            x: parent.width/2 - imageZoom.scale/2
             y: 0
             width: imageZoom.scale
             height: parent.height
@@ -130,7 +130,7 @@ Window {
             border.color: "black"
             border.width: 1
             x: 0
-            y: parent.width/2
+            y: parent.width/2 - imageZoom.scale/2
             width: parent.width
             height: imageZoom.scale
         }
