@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+
+import os
+import subprocess
+import dbus
+import time
+from pprint import pprint
+from argparse import ArgumentParser
+from configparser import ConfigParser
+from imgurpython import ImgurClient
+import json
+
+def fullpath(path):
+    return os.path.abspath(os.path.expanduser(path))
+
+config_filepath = fullpath('~/.nixshotrc')
+history_filepath = fullpath('~/.nixshot.log')
+client_id = 'b3e6219d9129685'
+client_secret = 'dc5f2345162c71323200c32baf6f416e5fdbe674'
+
+# https://github.com/asweigart/pyperclip/blob/master/pyperclip/clipboards.py
+def copy_to_clipboard(text):
+    cmd = ['xclip', '-selection', 'c']
+    p = subprocess.Popen(cmd, stdin=subprocess.PIPE, close_fds=True)
+    p.communicate(input=text.encode('utf-8'))
+
+def notify(image_url, image_filepath):
+    # Generate Thumbnail
+    image_thumbnail_filepath = '/tmp/nixshot-notification-{}.png'.format(time.time())
+    cmd = ["convert", image_filepath, "-thumbnail", "400x300", image_thumbnail_filepath]
+    subprocess.call(cmd)
+
+    # Create Notification
+    bus = dbus.SessionBus()
+    obj = bus.get_object('org.freedesktop.Notifications', '/org/freedesktop/Notifications')
+    Notifications = dbus.Interface(obj, 'org.freedesktop.Notifications')
+    
+    # https://developer.gnome.org/notification-spec/
+    summary = image_url
+    body = '<img src="{0}" alt="test" />'.format(image_thumbnail_filepath)
+    actions = [] # ["action", "label"]
+    hints = [] # dbus.Dictionary()
+    Notifications.Notify('nixshot', 0, '', summary, body, actions, hints, 3000)
+
+    # Delete thumbnail
+    cmd = ['rm', image_thumbnail_filepath]
+    subprocess.call(cmd)
+
+
+parser = ArgumentParser()
+parser.add_argument("imagepath", nargs="?",help="upload image to imgur")
+parser.add_argument("-a", "--imgur-auth", dest="auth", action="store_true", help="start login to imgur")
+parser.add_argument("-p", "--imgur-pin", dest="pin", help="finish login to imgur")
+args = parser.parse_args()
+
+client = ImgurClient(client_id, client_secret)
+access_token = None
+refresh_token = None
+
+config = ConfigParser()
+if os.path.exists(config_filepath):
+    config.read(config_filepath)
+
+if args.auth:
+    authorization_url = client.get_auth_url('pin')
+    print('Please visit {}'.format(authorization_url))
+    print('Then run: uploadscreenshot -p CODEHERE')
+
+elif args.pin:
+    print(args.pin)
+    credentials = client.authorize(args.pin, 'pin')
+    if 'credentials' not in config.sections():
+        config.add_section('credentials')
+    config.set('credentials', 'access_token', credentials['access_token'])
+    config.set('credentials', 'refresh_token', credentials['refresh_token'])
+    with open(config_filepath, 'w') as f:
+        config.write(f)
+
+elif args.imagepath:
+    access_token = config.get('credentials', 'access_token')
+    refresh_token = config.get('credentials', 'refresh_token')
+    if access_token and refresh_token:
+        print('[nixshot] logged in')
+        client.set_user_auth(access_token, refresh_token)
+
+    image_filepath = fullpath(args.imagepath)
+    print('[nixshot] uploading "{}"'.format(image_filepath))
+
+    #is_anon = access_token is not None
+    image = client.upload_from_path(image_filepath, anon=False)
+    pprint(image)
+
+    ### Log
+    with open(history_filepath, "a+") as f:
+        f.write(json.dumps(image) + '\n')
+
+    ### Clipboard
+    image_url = image['link'].replace('http://', 'https://')
+    copy_to_clipboard(image_url)
+
+    ### Notification
+    notify(image_url, image_filepath)
+
+
+else:
+    parser.print_help()
