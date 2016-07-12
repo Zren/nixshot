@@ -3,6 +3,7 @@ import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
 
 Window {
+    id: main
     visible: true
     flags: Qt.FramelessWindowHint | Qt.X11BypassWindowManagerHint | Qt.WindowStaysOnTopHint
     width: image.sourceSize.width
@@ -12,9 +13,24 @@ Window {
     property int cursorX: 0
     property int cursorY: 0
     property string imageUrl: 'file://' + inFilename
+    property bool isCropping: false
+    property bool exitOnRelease: true
 
     signal regionSelected(rect region)
-    signal cancel(int exitCode)
+    signal quitApp(int exitCode)
+
+    function finish() {
+        regionSelected(crop)
+        Qt.quit();
+    }
+
+    function reset() {
+        main.isCropping = false
+        crop.x = 0
+        crop.y = 0
+        crop.width = 0
+        crop.height = 0
+    }
 
     Component.onCompleted: {
         requestActivate()
@@ -23,17 +39,30 @@ Window {
     Item {
         focus: true
 
+        Keys.onReturnPressed: {
+            console.log('onReturnPressed')
+            if (crop.width > 0 && crop.height > 0) {
+                main.finish()
+            }
+        }
+
         Keys.onEscapePressed: {
             console.log('onEscapePressed')
-            cancel(1)
+            if (main.isCropping) {
+                main.reset()
+            } else {
+                quitApp(1)
+            }
         }
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
 
         onPressed: {
+            main.isCropping = true
             crop.x = mouse.x
             crop.y = mouse.y
             crop.width = 1
@@ -43,15 +72,16 @@ Window {
             cursorX = mouse.x
             cursorY = mouse.y
 
-            if (pressed) {
+            if (pressed && main.isCropping) {
                 crop.width = mouse.x - crop.x + 1
                 crop.height = mouse.y - crop.y + 1
             }
         }
 
         onReleased: {
-            regionSelected(crop)
-            Qt.quit();
+            if (main.isCropping && main.exitOnRelease) {
+                main.finish()
+            }
         }
     }
 
@@ -106,8 +136,6 @@ Window {
         Image {
             id: imageZoom
             source: imageUrl
-//            x: -cursorX
-//            y: -cursorY
 
             x: -cursorX*scale + parent.width/2 - scale/2
             y: -cursorY*scale + parent.height/2 - scale/2
@@ -117,6 +145,24 @@ Window {
 
         }
 
+        Rectangle {
+            color: "transparent"
+            border.color: "white"
+            border.width: 1
+            x: parent.width/2 - imageZoom.scale/2 - 1
+            y: 0
+            width: imageZoom.scale + 2
+            height: parent.height
+        }
+        Rectangle {
+            color: "transparent"
+            border.color: "white"
+            border.width: 1
+            x: 0
+            y: parent.width/2 - imageZoom.scale/2 - 1
+            width: parent.width
+            height: imageZoom.scale + 2
+        }
         Rectangle {
             color: "transparent"
             border.color: "black"

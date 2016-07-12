@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     root->setProperty("inFilename", QFileInfo(inFilename).absoluteFilePath());
 
     QObject::connect(root, SIGNAL(regionSelected(QRectF)), &imageCropper, SLOT(cropImage(QRectF)));
-    QObject::connect(root, SIGNAL(cancel(int)), &imageCropper, SLOT(quitApp(int)));
+    QObject::connect(root, SIGNAL(quitApp(int)), &imageCropper, SLOT(quitApp(int)));
 
     return app.exec();
 }
