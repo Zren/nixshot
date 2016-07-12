@@ -14,6 +14,7 @@ Window {
     property string imageUrl: 'file://' + inFilename
 
     signal regionSelected(rect region)
+    signal cancel(int exitCode)
 
     Component.onCompleted: {
         requestActivate()
@@ -24,7 +25,7 @@ Window {
 
         Keys.onEscapePressed: {
             console.log('onEscapePressed')
-            Qt.quit(1)
+            cancel(1)
         }
     }
 

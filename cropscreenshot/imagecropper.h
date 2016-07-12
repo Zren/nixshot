@@ -12,6 +12,7 @@ public:
 
 public slots:
     void cropImage(QRectF region);
+    void quitApp(int exitCode);
 private:
     QString inFilename;
     QString outFilename;
