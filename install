@@ -1,0 +1,22 @@
+#!/bin/sh
+
+### Compile
+cd cropscreenshot
+sh ./build
+cd ..
+
+### mkdir
+mkdir -p ~/bin
+mkdir -p ~/Pictures/Screenshots
+
+### Copy scripts/binaries
+cp ./bin/* ~/bin
+cp ./cropscreenshot/builddir/cropscreenshot ~/bin/cropscreenshot
+
+### Install keybindings
+# cat ./.xbindkeysrc >> ~/.xbindkeysrc
+# killall xbindkeys
+# xbindkeys
+
+### Clean builddir
+rm -r ./cropscreenshot/builddir

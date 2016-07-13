@@ -1,0 +1,8 @@
+#!/bin/sh
+
+rm -r ./builddir
+mkdir -p ./builddir
+cd builddir 
+qmake ../
+make
+cd ..
