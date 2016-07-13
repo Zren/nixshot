@@ -124,8 +124,9 @@ Window {
 
     property int zoomPixels: 13
     Rectangle {
-        x: cursorX + 10
-        y: cursorY + 10
+
+        x: cursorX + 10 + width <= image.sourceSize.width ? cursorX + 10 : cursorX - width - 10
+        y: cursorY + 10 + height <= image.sourceSize.height ? cursorY + 10 : cursorY - height - 10
         width: 100
         height: 100
         color: "black"
