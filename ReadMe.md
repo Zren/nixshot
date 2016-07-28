@@ -4,7 +4,7 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 
 ## Screenshots
  
-![](https://i.imgur.com/7FjM9fN.png)
+![](https://i.imgur.com/aIoHNL9.png)
 
 ## Install
 
