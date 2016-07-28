@@ -32,6 +32,13 @@ Window {
         crop.height = 0
     }
 
+    function cropAll() {
+        crop.x = 0
+        crop.y = 0
+        crop.width = image.sourceSize.width
+        crop.height = image.sourceSize.height
+    }
+
     Component.onCompleted: {
         requestActivate()
     }
@@ -39,29 +46,32 @@ Window {
     Item {
         focus: true
 
-        Keys.onReturnPressed: {
-            console.log('onReturnPressed')
-            if (crop.width > 0 && crop.height > 0) {
-                main.finish()
-            }
-        }
-
-        Keys.onEscapePressed: {
-            console.log('onEscapePressed')
-            if (main.isCropping) {
-                main.reset()
-            } else {
-                quitApp(1)
-            }
-        }
-
         Keys.onPressed: {
             if (event.key == Qt.Key_F1) {
                 showHelp = !showHelp
+                event.accepted = true
             } else if (event.key == Qt.Key_I) {
                 showPositionAndSize = !showPositionAndSize
+                event.accepted = true
             } else if (event.key == Qt.Key_M) {
                 showMagnifier = !showMagnifier
+                event.accepted = true
+            } else if (event.key == Qt.Key_Return) {
+                if (crop.width > 0 && crop.height > 0) {
+                    main.finish()
+                }
+                event.accepted = true
+            } else if (event.key == Qt.Key_Escape) {
+                if (main.isCropping) {
+                    main.reset()
+                } else {
+                    quitApp(1)
+                }
+                event.accepted = true
+            } else if (event.key == Qt.Key_Space) {
+                main.cropAll()
+                main.finish()
+                event.accepted = true
             }
         }
     }
@@ -324,8 +334,8 @@ Window {
                     "",
                     "[Hold left click] Start region selection",
                     "[Esc] Cancel capture",
-                    // "",
-                    // "[Space] Fullscreen capture",
+                    "",
+                    "[Space] Fullscreen capture",
                     "",
                     "[Mouse wheel] Change magnifier pixel count",
                     "[Ctrl + Mouse wheel] Change magnifier pixel size",
