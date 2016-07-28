@@ -54,6 +54,16 @@ Window {
                 quitApp(1)
             }
         }
+
+        Keys.onPressed: {
+            if (event.key == Qt.Key_F1) {
+                showHelp = !showHelp
+            } else if (event.key == Qt.Key_I) {
+                showPositionAndSize = !showPositionAndSize
+            } else if (event.key == Qt.Key_M) {
+                showMagnifier = !showMagnifier
+            }
+        }
     }
 
     MouseArea {
@@ -154,8 +164,10 @@ Window {
     property int zoomPixels: 9
     property int minZoomScale: 4
     property int zoomScale: 16
+    property bool showMagnifier: true
     Rectangle {
         id: magnifier
+        visible: showMagnifier
         x: (cursorX + 10 + width) <= image.sourceSize.width ? cursorX + 10 : cursorX - width - 10
         y: (cursorY + 10 + height) <= image.sourceSize.height ? cursorY + 10 : cursorY - height - 10
         width: zoomPixels * zoomScale
@@ -249,8 +261,8 @@ Window {
     Item {
         id: cursorPositionOverlay
         visible: showPositionAndSize
-        x: magnifier.x + magnifier.width/2 - width/2
-        y: magnifier.y + magnifier.height + 4
+        x: magnifier.x + (showMagnifier ? magnifier.width/2 : 0) - width/2
+        y: magnifier.y + (showMagnifier ? magnifier.height : 0) + 4
         width: cursorPositionText.implicitWidth + padding * 2
         height: cursorPositionText.implicitHeight + padding * 2
         property int padding: 2
@@ -308,8 +320,8 @@ Window {
             textFormat: Text.RichText
             text: {
                 var lines = [
-                    // "[F1] Hide Tips",
-                    // "",
+                    "[F1] Hide Tips",
+                    "",
                     "[Hold left click] Start region selection",
                     "[Esc] Cancel capture",
                     // "",
@@ -317,8 +329,8 @@ Window {
                     "",
                     "[Mouse wheel] Change magnifier pixel count",
                     "[Ctrl + Mouse wheel] Change magnifier pixel size",
-                    // "[I] Hide position and size info",
-                    // "[M] Hide magnifier",
+                    "[I] Hide position and size info",
+                    "[M] Hide magnifier",
                     // "[C] Show screen wide crosshair"
                     
 
