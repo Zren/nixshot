@@ -84,6 +84,33 @@ Window {
                 main.finish()
             }
         }
+
+        onWheel: {
+            var delta = wheel.angleDelta.y || wheel.angleDelta.x;
+            if (wheel.modifiers == Qt.NoModifier) {
+                if (delta > 0) {;
+                    if ( (zoomPixels+1) * zoomScale <= Math.min(image.sourceSize.width, image.sourceSize.height) / 2 ) {
+                        zoomPixels += 1;
+                    } else {
+                        zoomScale = Math.max(minZoomScale, zoomScale-1)
+                    }
+                } else {
+                    zoomPixels = Math.max(minZoomPixels, zoomPixels-1)
+                }
+                wheel.accepted = true;
+            } else if (wheel.modifiers == Qt.ControlModifier) {
+                if (delta > 0) {
+                    if ( zoomPixels * (zoomScale+1) <= Math.min(image.sourceSize.width, image.sourceSize.height) / 2 ) {
+                        zoomScale += 1;
+                    } else {
+                        zoomPixels = Math.max(minZoomPixels, zoomPixels-1)
+                    }
+                } else {
+                    zoomScale = Math.max(minZoomScale, zoomScale-1)
+                }
+                wheel.accepted = true;
+            }
+        }
     }
 
     Image {
@@ -123,7 +150,9 @@ Window {
         border.width: 1
     }
 
+    property int minZoomPixels: 5
     property int zoomPixels: 9
+    property int minZoomScale: 4
     property int zoomScale: 16
     Rectangle {
         id: magnifier
@@ -285,9 +314,9 @@ Window {
                     "[Esc] Cancel capture",
                     // "",
                     // "[Space] Fullscreen capture",
-                    // "",
-                    // "[Mouse wheel] Change magnifier pixel count",
-                    // "[Ctrl + Mouse wheel] Change magnifier pixel size",
+                    "",
+                    "[Mouse wheel] Change magnifier pixel count",
+                    "[Ctrl + Mouse wheel] Change magnifier pixel size",
                     // "[I] Hide position and size info",
                     // "[M] Hide magnifier",
                     // "[C] Show screen wide crosshair"
