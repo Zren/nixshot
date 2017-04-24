@@ -9,7 +9,7 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 ## Install
 
 ```
-sudo apt-get install xbindkeys scrot python3
+sudo apt-get install xbindkeys scrot python3 python3-pip qt5-qmake qtdeclarative5-dev
 pip3 install imgurpython
 git clone https://github.com/Zren/nixshot
 cd nixshot

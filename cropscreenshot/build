@@ -1,8 +1,11 @@
 #!/bin/sh
 
-rm -r ./builddir
+if [ -d "builddir" ]; then
+    rm -r ./builddir
+fi
+
 mkdir -p ./builddir
 cd builddir 
-qmake ../
+qmake -qt=qt5 ../
 make
 cd ..
