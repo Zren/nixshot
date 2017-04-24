@@ -240,8 +240,10 @@ Window {
     Item {
         id: pointPositionOverlay
         visible: showPositionAndSize && crop.width != 0 && crop.height != 0
-        x: crop.x
-        y: crop.y - height - 4
+        property int margin: 4
+        property bool showAbove: crop.y > height - margin
+        x: showAbove ? crop.x : crop.x + margin
+        y: showAbove ? crop.y - height - margin : crop.y + margin
         width: pointPositionText.implicitWidth + padding * 2
         height: pointPositionText.implicitHeight + padding * 2
         property int padding: 2
