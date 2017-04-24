@@ -13,6 +13,12 @@ mkdir -p ~/Pictures/Screenshots
 cp ./bin/* ~/bin
 cp ./cropscreenshot/builddir/cropscreenshot ~/bin/cropscreenshot
 
+### Make scripts/binaries executeable
+chmod +x ~/bin/captureregion
+chmod +x ~/bin/capturescreen
+chmod +x ~/bin/uploadscreenshot
+chmod +x ~/bin/cropscreenshot
+
 ### Install keybindings
 # cat ./.xbindkeysrc >> ~/.xbindkeysrc
 # killall xbindkeys
