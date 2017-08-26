@@ -32,12 +32,6 @@ Window {
             } else if (event.key == Qt.Key_Escape) {
                 Qt.quit();
                 event.accepted = true
-            } else if (event.matches(StandardKey.Undo)) {
-                canvas.undo()
-                event.accepted = true
-            } else if (event.matches(StandardKey.Redo)) {
-                canvas.redo()
-                event.accepted = true
             } else if (event.key == Qt.Key_C) {
                 colorSelector.toggle()
             } else if (event.key == Qt.Key_1) {
@@ -49,6 +43,17 @@ Window {
             } else if (event.key == Qt.Key_4) {
                 canvas.setCursorWidth(40)
             }
+        }
+
+        Shortcut {
+            id: undoShortcut
+            sequence: StandardKey.Undo
+            onActivated: canvas.undo()
+        }
+        Shortcut {
+            id: redoShortcut
+            sequence: StandardKey.Redo
+            onActivated: canvas.redo()
         }
     }
 
@@ -69,6 +74,7 @@ Window {
                 var lastOp = history.pop()
                 forwardHistory.push(lastOp)
             }
+            cachedHistoryImage = null
             requestPaint()
         }
 
@@ -77,6 +83,7 @@ Window {
                 var lastOp = forwardHistory.pop()
                 history.push(lastOp)
             }
+            cachedHistoryImage = null
             requestPaint()
         }
 
@@ -416,6 +423,8 @@ Window {
                     "[P] Draw with Pen",
                     indent + "[C] Choose color",
                     indent + "[1-4] Size of brush",
+                    indent + "[" + undoShortcut.nativeText + "] Undo",
+                    indent + "[" + redoShortcut.nativeText + "] Redo",
 
                 ];
 
