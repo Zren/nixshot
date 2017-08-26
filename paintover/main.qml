@@ -74,7 +74,7 @@ Window {
             var op = {}
             if (currentTool == 'pen') {
                 op.type = 'path'
-                op.strokeStyle = '' + currentStrokeColor
+                op.strokeStyle = Qt.lighter(currentStrokeColor, 1) // clone
                 op.lineWidth = currentStrokeWidth
                 op.lineJoin = 'round'
                 op.path = [
@@ -108,7 +108,6 @@ Window {
 
         function paintPath(op) {
             context.beginPath()
-
             for (var i = 0; i < op.path.length; i++) {
                 var p = op.path[i]
                 if (i == 0) {
@@ -117,7 +116,6 @@ Window {
                     context.lineTo(p.x, p.y)
                 }
             }
-            
             applyProperty(op, 'strokeStyle')
             applyProperty(op, 'lineWidth')
             applyProperty(op, 'lineJoin')
@@ -163,6 +161,9 @@ Window {
 
             function toggle() {
                 if (visible) {
+                    if (canvas.currentOperation) {
+                        canvas.finishOperation(mouseArea.mouseX, mouseArea.mouseY)
+                    }
                     visible = false
                     origin = Qt.point(0, 0)
                 } else {
@@ -170,6 +171,7 @@ Window {
                     visible = true
                     origin = Qt.point(mouseArea.mouseX, mouseArea.mouseY)
                 }
+                canvas.requestPaint()
             }
 
             property variant steps: []
@@ -215,29 +217,32 @@ Window {
                 steps = arr
             }
 
+            function setupStepPath(context, step) {
+                context.beginPath()
+                context.arc(origin.x, origin.y,
+                    step.r1,
+                    step.a1, step.a2,
+                    false)
+                context.arc(origin.x, origin.y,
+                    step.r2,
+                    step.a2, step.a1,
+                    true)
+                context.closePath()
+            }
+
             function paint(context) {
                 for (var i = 0; i < steps.length; i++) {
                     var step = steps[i]
+                    setupStepPath(context, step)
                     context.fillStyle = step.c
-
-                    context.beginPath()
-                    context.arc(origin.x, origin.y,
-                        step.r1,
-                        step.a1, step.a2,
-                        false)
-                    context.arc(origin.x, origin.y,
-                        step.r2,
-                        step.a2, step.a1,
-                        true)
-                    context.closePath()
-
                     context.fill()
+                }
 
-                    if (step == hoveredStep) {
-                        context.lineWidth = 3
-                        context.strokeStyle = Qt.hsla(step.hr, 0.65, 1-step.lr, 1)
-                        context.stroke()
-                    }
+                if (hoveredStep) {
+                    setupStepPath(context, hoveredStep)
+                    context.strokeStyle = Qt.hsla(hoveredStep.hr, 0.65, 1-hoveredStep.lr, 1)
+                    context.lineWidth = 3
+                    context.stroke()
                 }
             }
 
@@ -290,20 +295,22 @@ Window {
             }
         }
 
+        function paintPenCursor() {
+            context.beginPath()
+            context.arc(mouseArea.mouseX, mouseArea.mouseY,
+                currentStrokeWidth,
+                0, Math.PI*2,
+                false)
+            context.lineWidth = 1
+            context.strokeStyle = currentStrokeColor
+            context.stroke()
+        }
 
         function paintMouse() {
             if (colorSelector.visible) {
                 colorSelector.paint(context)
             } else if (currentTool == 'pen') {
-
-                context.beginPath()
-                context.arc(mouseArea.mouseX, mouseArea.mouseY,
-                    currentStrokeWidth,
-                    0, Math.PI*2,
-                    false)
-                context.lineWidth = 1
-                context.strokeStyle = currentStrokeColor
-                context.stroke()
+                // paintPenCursor()
             }
         }
 
@@ -318,7 +325,8 @@ Window {
                 getContext('2d')
             }
 
-            context.clearRect(0, 0, width, height)
+            // context.clearRect(0, 0, width, height)
+            context.reset()
             paintAll()
         }
 
@@ -329,7 +337,9 @@ Window {
             cursorShape: Qt.CrossCursor
 
             onPressed: {
-                canvas.startOperation(mouseX, mouseY)
+                if (!colorSelector.visible) {
+                    canvas.startOperation(mouseX, mouseY)
+                }
                 canvas.requestPaint()
             }
             onPositionChanged: {
@@ -339,13 +349,12 @@ Window {
                 canvas.requestPaint()
             }
             onReleased: {
-                if (canvas.currentOperation) {
-                    canvas.finishOperation(mouseX, mouseY)
-                }
                 if (colorSelector.visible) {
                     colorSelector.select()
+                } else if (canvas.currentOperation) {
+                    canvas.finishOperation(mouseX, mouseY)
+                    canvas.requestPaint()
                 }
-                canvas.requestPaint()
             }
         }
     }
