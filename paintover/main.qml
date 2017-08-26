@@ -76,6 +76,7 @@ Window {
                 op.type = 'path'
                 op.strokeStyle = Qt.lighter(currentStrokeColor, 1) // clone
                 op.lineWidth = currentStrokeWidth
+                op.lineCap = 'round'
                 op.lineJoin = 'round'
                 op.path = [
                     {
@@ -118,6 +119,7 @@ Window {
             }
             applyProperty(op, 'strokeStyle')
             applyProperty(op, 'lineWidth')
+            applyProperty(op, 'lineCap')
             applyProperty(op, 'lineJoin')
             context.stroke()
         }
