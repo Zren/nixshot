@@ -37,6 +37,14 @@ Window {
                 event.accepted = true
             } else if (event.key == Qt.Key_C) {
                 colorSelector.toggle()
+            } else if (event.key == Qt.Key_1) {
+                canvas.currentStrokeWidth = 10
+            } else if (event.key == Qt.Key_2) {
+                canvas.currentStrokeWidth = 20
+            } else if (event.key == Qt.Key_3) {
+                canvas.currentStrokeWidth = 30
+            } else if (event.key == Qt.Key_4) {
+                canvas.currentStrokeWidth = 40
             }
         }
     }
