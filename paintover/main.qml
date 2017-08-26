@@ -308,7 +308,7 @@ Window {
         function paintPenCursor() {
             context.beginPath()
             context.arc(mouseArea.mouseX, mouseArea.mouseY,
-                currentStrokeWidth,
+                currentStrokeWidth / 2,
                 0, Math.PI*2,
                 false)
             context.lineWidth = 1
