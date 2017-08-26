@@ -38,13 +38,13 @@ Window {
             } else if (event.key == Qt.Key_C) {
                 colorSelector.toggle()
             } else if (event.key == Qt.Key_1) {
-                canvas.currentStrokeWidth = 10
+                canvas.setCursorWidth(10)
             } else if (event.key == Qt.Key_2) {
-                canvas.currentStrokeWidth = 20
+                canvas.setCursorWidth(20)
             } else if (event.key == Qt.Key_3) {
-                canvas.currentStrokeWidth = 30
+                canvas.setCursorWidth(30)
             } else if (event.key == Qt.Key_4) {
-                canvas.currentStrokeWidth = 40
+                canvas.setCursorWidth(40)
             }
         }
     }
@@ -164,7 +164,10 @@ Window {
             }
         }
 
-        
+        function setCursorWidth(size) {
+            currentStrokeWidth = size
+            requestPaint()
+        }
 
         QtObject {
             id: colorSelector
