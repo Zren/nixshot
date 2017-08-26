@@ -54,6 +54,7 @@ Window {
         anchors.fill: parent
         property variant history: []
         property variant forwardHistory: []
+        property var cachedHistoryImage: null
         property variant currentOperation: null
         property string currentTool: 'pen'
         property color currentStrokeColor: '#f00'
@@ -112,6 +113,7 @@ Window {
             // console.log('finishOperation', mouseX, mouseY, JSON.stringify(currentOperation))
             history.push(currentOperation)
             currentOperation = null
+            cachedHistoryImage = null
             // mouseArea.cursorShape = Qt.ArrowCursor
         }
 
@@ -145,9 +147,14 @@ Window {
         }
 
         function paintHistory() {
-            for (var i = 0; i < history.length; i++) {
-                var op = history[i]
-                paintOperation(op)
+            if (cachedHistoryImage) {
+                context.drawImage(cachedHistoryImage, 0, 0)
+            } else {
+                for (var i = 0; i < history.length; i++) {
+                    var op = history[i]
+                    paintOperation(op)
+                }
+                cachedHistoryImage = context.getImageData(0, 0, width, height)
             }
         }
 
@@ -320,7 +327,7 @@ Window {
             if (colorSelector.visible) {
                 colorSelector.paint(context)
             } else if (currentTool == 'pen') {
-                // paintPenCursor()
+                paintPenCursor()
             }
         }
 
@@ -334,8 +341,6 @@ Window {
             if (!context) {
                 getContext('2d')
             }
-
-            // context.clearRect(0, 0, width, height)
             context.reset()
             paintAll()
         }
@@ -363,8 +368,8 @@ Window {
                     colorSelector.select()
                 } else if (canvas.currentOperation) {
                     canvas.finishOperation(mouseX, mouseY)
-                    canvas.requestPaint()
                 }
+                canvas.requestPaint()
             }
         }
     }
