@@ -26,7 +26,10 @@ Window {
         focus: true
 
         Keys.onPressed: {
-            if (event.key == Qt.Key_Escape) {
+            if (event.key == Qt.Key_F1) {
+                showHelp = !showHelp
+                event.accepted = true
+            } else if (event.key == Qt.Key_Escape) {
                 Qt.quit();
                 event.accepted = true
             } else if (event.matches(StandardKey.Undo)) {
@@ -406,20 +409,13 @@ Window {
             anchors.margins: parent.padding
             textFormat: Text.RichText
             text: {
+                var indent = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 var lines = [
                     "[F1] Hide Tips",
                     "",
-                    "[Hold left click] Start region selection",
-                    "[Esc] Cancel capture",
-                    "",
-                    "[Space] Fullscreen capture",
-                    "",
-                    "[Mouse wheel] Change magnifier pixel count",
-                    "[Ctrl + Mouse wheel] Change magnifier pixel size",
-                    "[I] Hide position and size info",
-                    "[M] Hide magnifier",
-                    // "[C] Show screen wide crosshair"
-                    
+                    "[P] Draw with Pen",
+                    indent + "[C] Choose color",
+                    indent + "[1-4] Size of brush",
 
                 ];
 
