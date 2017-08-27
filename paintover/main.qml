@@ -224,6 +224,22 @@ Window {
             function initSteps() {
                 var arr = []
                 var TAU = Math.PI*2
+
+                var step = {
+                    l: 1,
+                    h: 1,
+                    hr: 1,
+                    lr: 1,
+                    c: Qt.hsla(1, 1, 1, 1),
+                    ar1: 0,
+                    ar2: 1,
+                    a1: 0,
+                    a2: TAU,
+                    r1: 0,
+                    r2: baseRadius,
+                }
+                arr.push(step)
+
                 for (var l = 0; l < lightnessSteps; l++) {
                     for (var h = 0; h < hueSteps; h++) {
                         var hr = h / hueSteps
@@ -259,6 +275,7 @@ Window {
                         arr.push(step)
                     }
                 }
+
                 steps = arr
             }
 
