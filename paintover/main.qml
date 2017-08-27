@@ -32,8 +32,6 @@ Window {
             } else if (event.key == Qt.Key_Escape) {
                 Qt.quit();
                 event.accepted = true
-            } else if (event.key == Qt.Key_C) {
-                colorSelector.toggle()
             } else if (event.key == Qt.Key_1) {
                 canvas.setCursorWidth(10)
             } else if (event.key == Qt.Key_2) {
@@ -43,6 +41,13 @@ Window {
             } else if (event.key == Qt.Key_4) {
                 canvas.setCursorWidth(40)
             }
+        }
+
+        Shortcut {
+            id: colorSelectorToggleShortcut
+            sequence: "C"
+            autoRepeat: false
+            onActivated: colorSelector.toggle()
         }
 
         Shortcut {
