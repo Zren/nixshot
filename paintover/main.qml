@@ -40,6 +40,16 @@ Window {
                 canvas.setCursorWidth(30)
             } else if (event.key == Qt.Key_4) {
                 canvas.setCursorWidth(40)
+            } else if (event.key == Qt.Key_5) {
+                canvas.setCursorWidth(50)
+            } else if (event.key == Qt.Key_6) {
+                canvas.setCursorWidth(60)
+            } else if (event.key == Qt.Key_7) {
+                canvas.setCursorWidth(70)
+            } else if (event.key == Qt.Key_8) {
+                canvas.setCursorWidth(80)
+            } else if (event.key == Qt.Key_9) {
+                canvas.setCursorWidth(90)
             }
         }
 
@@ -427,7 +437,7 @@ Window {
                     "",
                     "[P] Draw with Pen",
                     indent + "[C] Choose color",
-                    indent + "[1-4] Size of brush",
+                    indent + "[1-9] Size of brush",
                     indent + "[" + undoShortcut.nativeText + "] Undo",
                     indent + "[" + redoShortcut.nativeText + "] Redo",
 
