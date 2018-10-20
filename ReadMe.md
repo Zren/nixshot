@@ -8,9 +8,10 @@ A tool to capture a screenshot, optionally crop it, then upload it, and finally 
 
 ## Install
 
+Note this needs `v1.1.9` of `imgurpython` from https://github.com/BryanH/imgurpython, the deprecated `v1.1.7` shipped with `pip3 install imgurpython` is out of date.
+
 ```
 sudo apt-get install xbindkeys scrot python3 python3-pip qt5-qmake qtdeclarative5-dev
-pip3 install imgurpython
 git clone https://github.com/Zren/nixshot
 cd nixshot
 sh ./install
